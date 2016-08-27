@@ -1,0 +1,11 @@
+body {
+    background: #F5F5F5;
+}
+
+body > div.grid {
+    height: 100%;
+}
+
+.ui.grid > .column:only-child {
+    width: fit-content;
+}
