@@ -28,13 +28,13 @@ const drawBarGraph = (bardata, labelx, labely) => {
         if (d < 1) {
             return "#FAFAFA";
         } else if (d < 2) {
-            return "#212121";
+            return "#424242";
         } else if (d < 3) {
-            return "#212121";
+            return "#424242";
         } else if (d < 4) {
             return "#FFC107";
         } else {
-            return "#212121";
+            return "#424242";
         }
     };
     const xLabelScale = d3.scaleBand()
@@ -71,6 +71,7 @@ const drawBarGraph = (bardata, labelx, labely) => {
                     .attr("x", (d, i) => xScale(i))
                     .attr("height", () => 0)
                     .attr("y", () => height)
+                    .style("outline", "1px solid #424242")
                     .on("mouseenter", function (data) {
                         d3.select(this).style("opacity", .5);
                     }).on("mouseleave",
