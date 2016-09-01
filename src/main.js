@@ -111,10 +111,10 @@ const drawBarGraph = (bardata, labelx, labely) => {
     xAxis(xGuide);
 };
 
-d3.csv("data/gpa.csv")
+d3.csv("data/State-GPA.csv")
   .row(data => ({
-      state: data.STATE,
-      gpa  : Number.parseFloat(data.GPA)
+      state: data.State,
+      gpa  : Number.parseFloat(data["Average-GPA"])
   })).get(parsedData => {
     drawBarGraph(parsedData, "state", "gpa");
 });
