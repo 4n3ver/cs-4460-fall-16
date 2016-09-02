@@ -18,7 +18,7 @@ Created for **CS4460: Information Visualization, FA16**, *Programming Homework 2
 `$ npm install --global webpack-dev-server`
 
 ## Screenshot
-<img src="/Screenies.PNG"></img>
+<img src="https://github.gatech.edu/raw/yivan3/cs-4460-fall-16/master/PHW2/Screenies.PNG?token=AAAJj7tnfW1ybhM0DSUQwHUpzwkSAfBEks5X0hjSwA%3D%3D"></img>
 
 ## Author
 Yoel Ivan (<a href="mailto:yivan3@gatech.edu">yivan3@gatech.edu</a>)
