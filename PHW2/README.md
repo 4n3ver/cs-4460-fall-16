@@ -12,10 +12,15 @@ Created for **CS4460: Information Visualization, FA16**, *Programming Homework 2
 
 ## Notes
 + This project requires `npm` to build and run, to install `npm` please install <a href="https://nodejs.org/en/">`node.js`</a>
+
 + If `webpack: command not found` error encountered, try installing `webpack` globally
-`$ npm install --global webpack`
+
+  `$ npm install --global webpack`
+
 + If `webpack-dev-server: command not found` error encountered, try installing `webpack-dev-server` globally
-`$ npm install --global webpack-dev-server`
+
+  `$ npm install --global webpack-dev-server`
+  
 + For grading purpose, the transpiled src code is now included in the `public/js/main.bundle.js`
 
 ## Screenshot
