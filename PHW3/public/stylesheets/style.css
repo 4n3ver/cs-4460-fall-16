@@ -1,0 +1,20 @@
+body {
+    background: #F5F5F5;
+}
+
+rect {
+    outline: 1px solid #424242;
+}
+
+body > div.grid {
+    height: 100%;
+}
+
+.ui.grid > .column:only-child {
+    width: fit-content;
+}
+
+#chart {
+    background: #cfcfcf;
+    border-radius: 10px;
+}

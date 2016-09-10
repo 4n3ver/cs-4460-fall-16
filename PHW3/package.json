@@ -1,24 +1,24 @@
 {
-  "name": "d3_note",
+  "name": "phw3",
   "version": "0.0.1",
-  "description": "Diving into D3",
+  "description": "Filtering and Animations",
   "main": "build/main.bundle.js",
   "scripts": {
     "build": "webpack --progress --colors",
     "start": "webpack-dev-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "4n3ver",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-core": "^6.13.2",
-    "babel-loader": "^6.2.5",
-    "babel-preset-es2015": "^6.13.2",
-    "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.15.0"
-  },
+  "author": "Yoel Ivan",
+  "license": "MIT",
   "dependencies": {
     "d3": "^4.2.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.15.1"
   },
   "repository": {
     "type": "git",
