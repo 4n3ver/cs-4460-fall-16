@@ -10,9 +10,37 @@
 <body>
 <div class="ui middle aligned center aligned grid">
   <div class="column">
-    <div class="ui segment">
+    <div class="ui raised segment">
       <h1 class="ui grey header">GPA Chart</h1>
       <section id="chart"></section>
+      <div class="ui right attached rail">
+        <div class="ui inverted padded segment">
+          <div class="ui inverted form">
+            <div class="two fields">
+              <div class="required field">
+                <label>Department</label>
+                <div class="ui fluid input">
+                  <select id="filter-dpt" class="ui compact selection dropdown">
+                    <option selected value="ALL">All</option>
+                  </select>
+                </div>
+              </div>
+              <div class="required field">
+                <label>GPA</label>
+                <div class="ui fluid labeled input">
+                  <div class="ui yellow label">
+                    &le;
+                  </div>
+                  <input id="filter-gpa" type="number" value="0">
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <div id="filter-btn" class="ui primary fluid button">Filter</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

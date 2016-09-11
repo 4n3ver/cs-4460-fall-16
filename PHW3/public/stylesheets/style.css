@@ -2,10 +2,6 @@ body {
     background: #F5F5F5;
 }
 
-rect {
-    outline: 1px solid #424242;
-}
-
 body > div.grid {
     height: 100%;
 }

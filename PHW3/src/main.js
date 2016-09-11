@@ -11,11 +11,11 @@ const drawBarGraph = (bardata, label) => {
     const margin = {
         top   : 30,
         right : 30,
-        bottom: 40,
+        bottom: 80,
         left  : 50
     };
-    const height = 720 - margin.top - margin.bottom;
-    const width = 1280 - margin.right - margin.left;
+    const height = 500 - margin.top - margin.bottom;
+    const width = 960 - margin.right - margin.left;
     const colorScale = d => {
         if (d < 1) {
             return "#F44336";
@@ -43,66 +43,130 @@ const drawBarGraph = (bardata, label) => {
         }
     };
     const xScale = d3.scaleBand()
-                     .domain(bardata.map(label.x))
                      .range([0, width])
                      .padding(.2);
     const yScale = d3.scaleLinear()
-                     .domain([0, d3.max(bardata, label.y)])
                      .range([height, 0]);
-
     let svg = d3.select('#chart').append('svg')
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom);
-    let bars = svg.append("g")
-                  .attr("class", "bars")
-                  .attr("transform",
-                        `translate(${margin.left}, ${margin.top})`)
-                  .selectAll("rect").data(bardata).enter()
-                  .append("g");
-    let chart = bars.append("rect")
-                    .style("fill", d => colorScale(label.y(d)))
-                    .attr("width", xScale.bandwidth())
-                    .attr("x", d => xScale(label.x(d)))
-                    .attr("height", () => 0)
-                    .attr("y", () => height)
-                    .on("mouseenter",
-                        function (data) {
-                            d3.select(this).style("opacity", .5);
-                        })
-                    .on("mouseleave",
-                        function (data) {
-                            d3.select(this).style("opacity", 1);
-                        });
-    let bartext = bars.append("text")
-                      .text(label.y)
-                      .attr("text-anchor", "middle")
-                      .attr("fill", d => colorTextScale(label.y(d)))
-                      .attr("x",
-                            d => xScale(label.x(d)) + xScale.bandwidth() / 2)
-                      .attr("y", height)
-                      .style("opacity", 0);
+    let xAxis = svg.append("g")
+                   .attr("transform",
+                         `translate(${margin.left}, ${height + margin.top})`);
+    let yAxis = svg.append("g")
+                   .attr("transform",
+                         `translate(${margin.left}, ${margin.top})`);
+    let barGraph = svg.append("g")
+                      .attr("class", "barGraph")
+                      .attr("transform",
+                            `translate(${margin.left}, ${margin.top})`);
+    let updateGraph = (bardata) => {
+        xScale.domain(bardata.map(label.x));
+        yScale.domain([0, d3.max(bardata, label.y)]);
+        let joinedBarGraph = barGraph.selectAll(".bar").data(bardata, label.x);
+        let oldRects = joinedBarGraph.selectAll("g.bar rect");
+        let oldTexts = joinedBarGraph.selectAll("g.bar text");
+        console.log(oldRects);
+        joinedBarGraph.exit()
+                      .transition()
+                      .duration(300)
+                      .attr("y", yScale(0))
+                      .attr("height", height - yScale(0))
+                      .style("fill-opacity", 1e-6)
+                      .remove();
+        let bars = joinedBarGraph.enter()
+                                 .append("g")
+                                 .attr("class", "bar");
+        let rects = bars.append("rect")
+                        .style("fill", d => colorScale(label.y(d)))
+                        .on("mouseenter",
+                            function (data) {
+                                d3.select(this).style("opacity", .5);
+                            })
+                        .on("mouseleave",
+                            function (data) {
+                                d3.select(this).style("opacity", 1);
+                            })
+                        .attr("height", () => 0)
+                        .attr("y", () => height)
+                        .merge(oldRects)
+                        .attr("width", xScale.bandwidth())
+                        .attr("x", d => xScale(label.x(d)));
+        let texts = bars.append("text")
+                        .attr("text-anchor", "middle")
+                        .attr("fill", d => colorTextScale(label.y(d)))
+                        .attr("y", height)
+                        .text(label.y)
+                        .style("opacity", 0)
+                        .merge(oldTexts)
+                        .attr("x",
+                              d => xScale(label.x(d)) + xScale.bandwidth() / 2);
+        rects.transition()
+             .delay((d, i) => i * 20)
+             .duration(2000)
+             .attr("height", d => height - yScale(label.y(d)))
+             .attr("y", d => yScale(label.y(d)))
+             .ease(d3.easeElastic);
+        oldRects.transition()
+                .delay((d, i) => i * 20)
+                .duration(1000)
+                .attr("height", d => height - yScale(label.y(d)))
+                .attr("y", d => yScale(label.y(d)))
+                .attr("width", xScale.bandwidth())
+                .attr("x", d => xScale(label.x(d)));
+        texts.transition()
+             .delay((d, i) => i * 20)
+             .duration(2000)
+             .attr("y", d => yScale(label.y(d)) + 15)
+             .style("opacity", 1)
+             .ease(d3.easeElastic);
+        oldTexts.transition()
+                .delay((d, i) => i * 20)
+                .duration(1000)
+                .attr("x",
+                      d => xScale(label.x(d)) + xScale.bandwidth() / 2)
+                .attr("y", d => yScale(label.y(d)) + 15);
+        xAxis.transition()
+             .duration(300)
+             .call(d3.axisBottom(xScale))
+             .selectAll("g g.tick > text")
+             .attr("text-anchor", "end")
+             .attr("transform",
+                   `rotate(-90) translate(${-10}, -10)`);
+        yAxis.transition()
+             .duration(300)
+             .call(d3.axisLeft(yScale));
+    };
+    updateGraph(bardata);
+    return updateGraph;
+};
 
-    chart.transition()
-         .delay((d, i) => i * 20)
-         .duration(2000)
-         .attr("height", d => height - yScale(label.y(d)))
-         .attr("y", d => yScale(label.y(d)))
-         .ease(d3.easeElastic);
-    bartext.transition()
-           .delay((d, i) => i * 20)
-           .duration(2000)
-           .attr("y", d => yScale(label.y(d)) + 15)
-           .style("opacity", 1)
-           .ease(d3.easeElastic);
-
-    svg.append("g")
-       .attr("transform",
-             `translate(${margin.left}, ${margin.top})`)
-       .call(d3.axisLeft(yScale));
-    svg.append("g")
-       .attr("transform",
-             `translate(${margin.left}, ${height + margin.top})`)
-       .call(d3.axisBottom(xScale));
+const setFilter = (departments, onFilter) => {
+    const filterDepartment = d3.select("#filter-dpt");
+    const filterGPA = d3.select("#filter-gpa");
+    const filterButton = d3.select("#filter-btn");
+    let gpa = 0;
+    let dpt = "ALL";
+    filterDepartment.on("input", function () {
+        dpt = this.value;
+    });
+    filterGPA.on("input", function () {
+        if (this.value >= 0 && this.value <= 4) {
+            filterButton.classed("disabled", false);
+            gpa = this.value;
+        } else {
+            filterButton.classed("disabled", true);
+        }
+    });
+    filterButton.on("click", function () {
+        console.log(dpt, gpa);
+        onFilter(e => e.gpa >= gpa && (dpt === "ALL" || e.department === dpt));
+    });
+    departments.forEach(
+        e => filterDepartment.append("option")
+                             .attr("value", e)
+                             .text(e)
+    );
 };
 
 d3.csv("data/Courses.csv")
@@ -116,9 +180,16 @@ d3.csv("data/Courses.csv")
         && d.department.length > 0
         && d.course.length > 0
     );
-    console.log(parsedData);
-    drawBarGraph(parsedData, {
+    const departments = Object.keys(parsedData.reduce(
+        (prev, curr) => {
+            prev[curr.department.toUpperCase()] = null;
+            return prev;
+        }, {}
+    ));
+    const updateBarGraph = drawBarGraph(parsedData, {
         x: d => `${d.department} ${d.course}`,
         y: d => d.gpa
     });
+    setFilter(departments, (comparator) =>
+        updateBarGraph(parsedData.filter(comparator)));
 });
