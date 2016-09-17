@@ -3,7 +3,8 @@
  * @version 0.0a
  */
 
-"use strict";
+// tell webpack to copy static html and css to build folder
+require.context("../public/", true, /^\.\/.*\.(html|css)/);
 
 import * as d3 from "d3";
 
@@ -66,7 +67,6 @@ const drawBarGraph = (bardata, label) => {
         let joinedBarGraph = barGraph.selectAll(".bar").data(bardata, label.x);
         let oldRects = joinedBarGraph.selectAll("g.bar rect");
         let oldTexts = joinedBarGraph.selectAll("g.bar text");
-        console.log(oldRects);
         joinedBarGraph.exit()
                       .transition()
                       .duration(300)
@@ -89,7 +89,7 @@ const drawBarGraph = (bardata, label) => {
                             })
                         .attr("height", () => 0)
                         .attr("y", () => height)
-                        .merge(oldRects)
+                        //.merge(oldRects)
                         .attr("width", xScale.bandwidth())
                         .attr("x", d => xScale(label.x(d)));
         let texts = bars.append("text")
@@ -98,9 +98,10 @@ const drawBarGraph = (bardata, label) => {
                         .attr("y", height)
                         .text(label.y)
                         .style("opacity", 0)
-                        .merge(oldTexts)
+                        //.merge(oldTexts)
                         .attr("x",
-                              d => xScale(label.x(d)) + xScale.bandwidth() / 2);
+                              d => xScale(label.x(d)) + xScale.bandwidth()
+                              / 2);
         rects.transition()
              .delay((d, i) => i * 20)
              .duration(2000)
@@ -151,7 +152,10 @@ const setFilter = (departments, onFilter) => {
         dpt = this.value;
     });
     filterGPA.on("input", function () {
-        if (this.value >= 0 && this.value <= 4) {
+        this.value = this.value.length > 0
+            ? Number.parseFloat(this.value)
+            : null;
+        if (this.value && this.value >= 0 && this.value <= 4) {
             filterButton.classed("disabled", false);
             gpa = this.value;
         } else {
@@ -159,7 +163,9 @@ const setFilter = (departments, onFilter) => {
         }
     });
     filterButton.on("click", function () {
+        filterButton.classed("disabled", true);
         console.log(dpt, gpa);
+        setTimeout(filterButton.classed.bind(filterButton, "disabled", false), 2000);
         onFilter(e => e.gpa >= gpa && (dpt === "ALL" || e.department === dpt));
     });
     departments.forEach(
@@ -180,16 +186,19 @@ d3.csv("data/Courses.csv")
         && d.department.length > 0
         && d.course.length > 0
     );
+
+    // build array of unique department
     const departments = Object.keys(parsedData.reduce(
         (prev, curr) => {
             prev[curr.department.toUpperCase()] = null;
             return prev;
         }, {}
     ));
+
     const updateBarGraph = drawBarGraph(parsedData, {
         x: d => `${d.department} ${d.course}`,
         y: d => d.gpa
     });
-    setFilter(departments, (comparator) =>
+    setFilter(departments, comparator =>
         updateBarGraph(parsedData.filter(comparator)));
 });

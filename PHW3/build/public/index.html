@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
+  <title>GPA</title>
+</head>
+<body>
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <div class="ui raised segment">
+      <h1 class="ui grey header">GPA Chart</h1>
+      <section id="chart"></section>
+      <div class="ui right attached rail">
+        <div class="ui inverted padded segment">
+          <div class="ui inverted form">
+            <div class="two fields">
+              <div class="required field">
+                <label>Department</label>
+                <div class="ui fluid input">
+                  <select id="filter-dpt" class="ui compact selection dropdown">
+                    <option selected value="ALL">All</option>
+                  </select>
+                </div>
+              </div>
+              <div class="required field">
+                <label>GPA</label>
+                <div class="ui fluid labeled input">
+                  <div class="ui yellow label">
+                    &le;
+                  </div>
+                  <input id="filter-gpa" type="number" value="0">
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <div id="filter-btn" class="ui primary fluid button">Filter</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="js/main.bundle.js"></script>
+</body>
+</html>
