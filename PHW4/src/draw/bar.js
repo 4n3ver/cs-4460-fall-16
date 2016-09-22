@@ -42,13 +42,16 @@ const barGraph = svg.append("g")
 let _label;
 
 const updateGraph = bardata => {
+    // prevent transition to be interrupted half-way through
+    const uniqueID = `${Math.random()}`;
+
     xScale.domain(bardata.map(_label.x));
     yScale.domain([0, d3.max(bardata, _label.y)]);
     const joinedBarGraph = barGraph.selectAll(".bar")
                                    .data(bardata, _label.x);
     const oldRects = joinedBarGraph.selectAll("g.bar rect");
     joinedBarGraph.exit()
-                  .transition()
+                  .transition(uniqueID)
                   .duration(300)
                   .attr("y", yScale(0))
                   .attr("height", height - yScale(0))
@@ -66,9 +69,10 @@ const updateGraph = bardata => {
                          .style("opacity", .85)
                          .on("click",
                              function (d) {
-                                 newRects.style("outline", "none");
+                                 newRects.style("stroke", "none");
                                  d3.select(this)
-                                   .style("outline", "2px solid #424242");
+                                   .style("stroke", "#424242")
+                                   .style("stroke-width", "3px");
                                  observer[DataEvent.SELECTED](d, d3.event);
                              })
                          .on("mouseenter",
@@ -79,38 +83,41 @@ const updateGraph = bardata => {
                              function (d) {
                                  d3.select(this).style("opacity", .85);
                              });
-    newRects.transition()
+    newRects.transition(uniqueID)
             .delay((d, i) => i * 20)
             .duration(2000)
             .attr("height", d => height - yScale(_label.y(d)))
             .attr("y", d => yScale(_label.y(d)))
             .ease(d3.easeElastic);
-    oldRects.transition()
+    oldRects.transition(uniqueID)
             .delay((d, i) => i * 20)
             .duration(1000)
             .attr("height", d => height - yScale(_label.y(d)))
             .attr("y", d => yScale(_label.y(d)))
             .attr("width", xScale.bandwidth())
             .attr("x", d => xScale(_label.x(d)));
-    xAxis.transition()
+    xAxis.transition(uniqueID)
          .duration(300)
          .call(d3.axisBottom(xScale))
          .selectAll("g g.tick > text")
          .attr("text-anchor", "end")
          .attr("transform", "rotate(-20) translate(0, 0)");
-    yAxis.transition()
+    yAxis.transition(uniqueID)
          .duration(300)
          .call(d3.axisLeft(yScale));
 };
 
 const highlightRect = criteria => {
+    // prevent transition to be interrupted half-way through
+    const uniqueID = `${Math.random()}`;
+
     const rects = svg.selectAll("rect");
     rects.filter(d => !criteria(d))
-         .transition()
+         .transition(uniqueID)
          .duration(2000)
          .style("fill", d => colorScale(_label.y(d)));
     rects.filter(d => criteria(d))
-         .transition()
+         .transition(uniqueID)
          .duration(2000)
          .style("fill", "#000");
 };

@@ -15,9 +15,11 @@ import { DataEvent, drawBarGraph, drawScatterPlot } from "./draw";
 const drawLegend = (data, label) => {
     const legend = select("#scatter-plot-legend");
     const colorScale = scaleOrdinal(schemeCategory10);
-    legend.selectAll("p").data(data).enter().append("p")
+    legend.selectAll("p").data(data).enter()
+          .append("p")
+          .append("strong")
           .style("color", d => colorScale(label.color(d)))
-          .html(d => `&bull; ${label.color(d)}`);
+          .text(d => `⬤ ${label.color(d)}`);
 };
 
 const tooltip = select("#tooltip");

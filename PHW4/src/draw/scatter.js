@@ -44,13 +44,16 @@ const scatter = svg.append("g")
 let _label;
 
 const updateScatter = data => {
+    // prevent transition to be interrupted half-way through
+    const uniqueID = `${Math.random()}`;
+
     xScale.domain([0, d3.max(data, _label.x)]);
     yScale.domain([0, d3.max(data, _label.y)]);
     const joinedScatter = scatter.selectAll(".dot")
                                  .data(data, _label.x);
     const oldCircles = joinedScatter.selectAll("g.dot circle");
     joinedScatter.exit()
-                 .transition()
+                 .transition(uniqueID)
                  .duration(300)
                  .attr("cy", yScale(0))
                  .attr("r", 0)
@@ -64,65 +67,66 @@ const updateScatter = data => {
                            .style("fill", d => colorScale(_label.color(d)))
                            .on("click",
                                function (d) {
-                                   newCircles.style("outline", "none");
+                                   newCircles.style("stroke", "none");
                                    d3.select(this)
-                                     .style("outline",
-                                            "2px solid #424242");
+                                     .style("stroke", "#424242")
+                                     .style("stroke-width", "3px");
                                    observer[DataEvent.SELECTED](d, d3.event);
                                })
                            .on("mouseenter",
                                function (d) {
                                    observer[DataEvent.MOUSE_ENTER](
-                                       d, d3.event
-                                   );
+                                       d, d3.event);
                                })
                            .on("mouseleave",
                                function (d) {
                                    observer[DataEvent.MOUSE_LEAVE](
-                                       d, d3.event
-                                   );
+                                       d, d3.event);
                                })
                            .attr("cx", 0)
                            .attr("cy", height)
                            .attr("r", 0);
-    newCircles.transition()
+    newCircles.transition(uniqueID)
               .delay((d, i) => i * 20)
               .duration(2000)
               .attr("cx", d => xScale(_label.x(d)))
               .attr("cy", d => yScale(_label.y(d)))
               .attr("r", d => circleScale(_label.size(d)))
               .ease(d3.easeExpInOut);
-    oldCircles.transition()
+    oldCircles.transition(uniqueID)
               .delay((d, i) => i * 20)
               .duration(1000)
               .attr("cx", d => xScale(_label.x(d)))
               .attr("cy", d => yScale(_label.y(d)))
               .attr("r", d => circleScale(_label.size(d)));
-    xAxis.transition()
+    xAxis.transition(uniqueID)
          .duration(300)
          .call(d3.axisBottom(xScale))
          .selectAll("g g.tick > text")
          .attr("text-anchor", "end")
          .attr("transform", `rotate(-90) translate(${-10}, -10)`);
-    yAxis.transition()
+    yAxis.transition(uniqueID)
          .duration(300)
          .call(d3.axisLeft(yScale));
 };
 
 const highlightDot = criteria => {
+    // prevent transition to be interrupted half-way through
+    const uniqueID = `${Math.random()}`;
+
     const circles = svg.selectAll("circle");
     circles.filter(d => !criteria(d))
-           .transition()
+           .transition(uniqueID)
            .duration(1000)
            .style("opacity", ".25");
     circles.filter(d => criteria(d))
-           .transition().delay((d, i) => i * 100)
+           .transition(uniqueID).delay((d, i) => i * 100)
            .duration(1000)
            .style("opacity", "1")
-           .transition().delay((d, i) => i * 10)
+           .transition(uniqueID).delay((d, i) => i * 10)
            .attr("r", d => circleScale(_label.size(d)) + 10)
            .ease(d3.easeBounce)
-           .transition().delay((d, i) => 100 + i * 10)
+           .transition(uniqueID).delay((d, i) => 100 + i * 10)
            .attr("r", d => circleScale(_label.size(d)))
            .ease(d3.easeBounce);
 };
