@@ -1,0 +1,33 @@
+body {
+    background: #F5F5F5;
+}
+
+body.container {
+    padding-top: 100px;
+}
+
+.two.column.doubling.grid .ui.raised.segment {
+    width: fit-content;
+}
+
+.ui.selection.dropdown {
+    padding: 5px;
+}
+
+.ui[class*="two column"].grid > .column:not(.row), .ui[class*="two column"].grid > .row > .column {
+    width: fit-content;
+}
+
+#tooltip {
+    position: absolute;
+    opacity: 0;
+}
+
+#scatter-plot-legend {
+    text-align: left;
+    padding-left: 50px;
+}
+
+#tooltip .ui.statistics {
+    margin: 0;
+}
